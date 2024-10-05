@@ -95,8 +95,10 @@ def home(request):
     topic_serializer = TopicSerializer(topics, many=True)
     message_serializer = MessageSerializer(messages, many=True)
 
-    return Response({
+    context = {
         'rooms': room_serializer.data,
         'topics': topic_serializer.data,
         'messages': message_serializer.data
-    })
+    }
+
+    return Response(context)

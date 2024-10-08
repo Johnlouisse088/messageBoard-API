@@ -87,7 +87,8 @@ def routes(request):
 
 @api_view(['GET'])
 def home(request):
-    
+    print("searhced: ", request.GET.get('searchedRoom'))
+
     searched_room = request.GET.get('searchedRoom') if request.GET.get('searchedRoom') is not None else ''
 
     # Models

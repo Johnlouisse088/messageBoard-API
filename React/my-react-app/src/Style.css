@@ -1,0 +1,27 @@
+:root {
+    --color-text-primary: #4B0082;
+    --color-text-secondary: #E0B0FF;
+
+    --color-dark-shade-1: #6C3082;
+    --color-dark-shade-2: #8B008B;
+
+    --color-background-primary: #9370DB;
+    --color-background-secondary: #9A4EAE;
+
+    --color-button-create: #3F2145;
+
+    --color-status-active: #301934;
+    --color-success: #5dd693;
+    --color-error: #fc4b0b;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Arial', sans-serif;
+    background-color: #f5f5f5;
+    color: #333333;
+    box-sizing: border-box;
+    /* Padding and border are included in the width and height */
+
+}

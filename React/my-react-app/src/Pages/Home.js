@@ -1,4 +1,7 @@
 import React from 'react'
+
+import Navbar from './Navbar'
+
 import { useState, useEffect } from 'react'
 
 function Home() {
@@ -23,9 +26,10 @@ function Home() {
         }
         fetchData()
     }, [])
-    console.log('message: ', messages)
+
     return (
         <>
+            <Navbar setRooms={setRooms} />
             <section id='topics-section' className='topics-header'>
                 <h3>Topics</h3>
                 <ul>
@@ -52,7 +56,6 @@ function Home() {
                     ))}
                 </ul>
             </section>
-
         </>
     )
 }

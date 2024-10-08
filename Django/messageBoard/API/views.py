@@ -87,18 +87,30 @@ def routes(request):
 
 @api_view(['GET'])
 def home(request):
-    rooms = Room.objects.all()
+    
+    searched_room = request.GET.get('searchedRoom') if request.GET.get('searchedRoom') is not None else ''
+
+    # Models
     topics = Topic.objects.all()
     messages = Message.objects.all()
+    rooms = Room.objects.filter(
+        room__icontains = searched_room
+    )
 
+
+    # Serializers
     room_serializer = RoomSerializer(rooms, many=True)
     topic_serializer = TopicSerializer(topics, many=True)
     message_serializer = MessageSerializer(messages, many=True)
 
+    # Context
     context = {
         'rooms': room_serializer.data,
         'topics': topic_serializer.data,
         'messages': message_serializer.data
     }
 
+    # Response body
     return Response(context)
+
+

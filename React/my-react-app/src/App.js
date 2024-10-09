@@ -25,7 +25,7 @@ function App() {
 
         <Route path="/rooms" >  {/* Parent route */}
           <Route index element={<Room />} />  {/* Renders only when parent route called (/rooms) */}
-          <Route path='create/:id' element={<RoomCreate />} />
+          <Route path='create/' element={<RoomCreate />} />
           <Route path='update/:id' element={<RoomUpdate />} />
           <Route path='delete/:id' element={<RoomDelete />} />
         </Route>

@@ -3,12 +3,15 @@ import React from 'react'
 import Navbar from './Navbar'
 
 import { useState, useEffect } from 'react'
+import { Link } from 'react-router-dom'
 
 function Home() {
 
     const [rooms, setRooms] = useState([])
     const [topics, setTopics] = useState([])
     const [messages, setMessages] = useState([])
+
+    const roomCount = Object.keys(rooms).length
 
     useEffect(() => {
         async function fetchData() {
@@ -27,35 +30,43 @@ function Home() {
         fetchData()
     }, [])
 
+
     return (
         <>
             <Navbar setRooms={setRooms} />
-            <section id='topics-section' className='topics-header'>
-                <h3>Topics</h3>
-                <ul>
-                    {topics.map(topic => (
-                        <li key={topic.id}>{topic.name}</li>
-                    ))}
-                </ul>
-            </section>
+            <div id='home-sections'>
+                <section id='topics-section' className='topics-header'>
+                    <h3>Topics</h3>
+                    <ul>
+                        {topics.map(topic => (
+                            <li key={topic.id}>{topic.name}</li>
+                        ))}
+                    </ul>
+                </section>
 
-            <section id='rooms-section' className='rooms-header'>
-                <h3>Rooms</h3>
-                <ul>
-                    {rooms.map(room => (
-                        <li key={room.id}>{room.room}</li>
-                    ))}
-                </ul>
-            </section>
+                <section id='rooms-section' className='rooms-header'>
+                    <div className='upper-room'>
+                        <h3>STUDY ROOM</h3>
+                        {roomCount} {roomCount <= 1 ? <p>room</p> : <p>rooms</p>}
+                        <button><Link to="/rooms/create">Create Room</Link></button>
+                    </div>
 
-            <section id='messages-section' className='messages-header'>
-                <h3>Messages</h3>
-                <ul>
-                    {messages.map(message => (
-                        <li key={message.id}>{message.message}</li>
-                    ))}
-                </ul>
-            </section>
+                    <ul>
+                        {rooms.map(room => (
+                            <li key={room.id}>{room.room}</li>
+                        ))}
+                    </ul>
+                </section>
+
+                <section id='messages-section' className='messages-header'>
+                    <h3>Messages</h3>
+                    <ul>
+                        {messages.map(message => (
+                            <li key={message.id}>{message.message}</li>
+                        ))}
+                    </ul>
+                </section>
+            </div>
         </>
     )
 }

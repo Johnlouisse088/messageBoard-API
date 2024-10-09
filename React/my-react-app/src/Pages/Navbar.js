@@ -24,13 +24,14 @@ function Navbar({ setRooms }) {
         fetchData()
     }
     return (
-        <div className='navbar-header'>
+        <div id='navbar' className='navbar-header'>
             <div className='left-container'>
                 <div>
-                    {/* <img src='/' /> */}
-                    <h1>Logo</h1>
+                    <h1>image
+                        <span>Logo</span>
+                    </h1>
                 </div>
-                <div>
+                <div className='form-container'>
                     <form onSubmit={handleSubmit}>
                         <input
                             type='text'
@@ -39,11 +40,13 @@ function Navbar({ setRooms }) {
                             onChange={handleChange}
                         />
                         <button type='submit' >Submit</button>
+
                     </form>
                 </div>
             </div>
             <div className='right-container'>
                 <div>
+                    <div>Login</div>
                     {/* profile picture */}
                     {/* username */}
                     {/* user email */}

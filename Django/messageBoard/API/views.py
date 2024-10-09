@@ -87,8 +87,6 @@ def routes(request):
 
 @api_view(['GET'])
 def home(request):
-    print("searhced: ", request.GET.get('searchedRoom'))
-
     searched_room = request.GET.get('searchedRoom') if request.GET.get('searchedRoom') is not None else ''
 
     # Models
@@ -97,8 +95,6 @@ def home(request):
     rooms = Room.objects.filter(
         room__icontains = searched_room
     )
-
-
     # Serializers
     room_serializer = RoomSerializer(rooms, many=True)
     topic_serializer = TopicSerializer(topics, many=True)
@@ -115,3 +111,12 @@ def home(request):
     return Response(context)
 
 
+@api_view(['POST'])
+def room_create(request):
+    print("----test", request.data)
+    serializer = RoomSerializer(data=request.data)
+    if serializer.is_valid():
+        serializer.save()
+    else:
+        print("ERROR!")
+    return Response(serializer.data)

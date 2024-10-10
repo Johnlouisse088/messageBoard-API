@@ -36,12 +36,15 @@ function Home() {
             <Navbar setRooms={setRooms} />
             <div id='home-sections'>
                 <section id='topics-section' className='topics-header'>
-                    <h3>Topics</h3>
+                    <h3>Browse Topics</h3>
                     <ul>
                         {topics.map(topic => (
                             <li key={topic.id}>{topic.name}</li>
                         ))}
                     </ul>
+                    <Link to='/topics'>
+                        More
+                    </Link>
                 </section>
 
                 <section id='rooms-section' className='rooms-header'>

@@ -6,7 +6,7 @@ urlpatterns = [
 
     path("", views.home, name="home"),
 
-    path("rooms/create/", views.room_create, name="room_create")
+    path("rooms/create/", views.room_create, name="room_create"),
 
 ]
 

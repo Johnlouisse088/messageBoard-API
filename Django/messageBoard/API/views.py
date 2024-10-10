@@ -1,3 +1,4 @@
+from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from .models import Room, Topic, Message
@@ -111,12 +112,25 @@ def home(request):
     return Response(context)
 
 
-@api_view(['POST'])
+@api_view(['POST', 'GET'])
 def room_create(request):
-    print("----test", request.data)
-    serializer = RoomSerializer(data=request.data)
-    if serializer.is_valid():
-        serializer.save()
-    else:
-        print("ERROR!")
-    return Response(serializer.data)
+    if request.method == "POST":
+        req_topic, created = Topic.objects.get_or_create(name=request.data.get("topic"))
+        req_room = request.data.get("room")
+        req_description = request.data.get("description")
+        request_data = {
+            "user": 1,
+            "room": req_room,
+            "description": req_description,
+            "topic": req_topic.id
+        }
+        serializer = RoomSerializer(data=request_data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    else:    # For data list in front-end
+        topics = Topic.objects.all()
+        topics_serializer = TopicSerializer(topics, many=True)
+        return Response({"topics": topics_serializer.data}, status=status.HTTP_200_OK)
+

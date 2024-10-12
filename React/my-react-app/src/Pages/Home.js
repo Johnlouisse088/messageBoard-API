@@ -42,6 +42,11 @@ function Home() {
                             <li key={topic.id}>{topic.name}</li>
                         ))}
                     </ul>
+
+                    <Link to="/topics">
+                        More Topics
+                    </Link>
+
                 </section>
 
                 <section id='rooms-section' className='rooms-header'>

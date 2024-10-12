@@ -1,3 +1,4 @@
+from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from .models import Room, Topic, Message
@@ -87,7 +88,8 @@ def routes(request):
 
 @api_view(['GET'])
 def home(request):
-    searched_room = request.GET.get('searchedRoom') if request.GET.get('searchedRoom') is not None else ''
+    # searched_room = request.GET.get('searchedRoom') if request.GET.get('searchedRoom') is not None else ''
+    searched_room = request.GET.get('searchedRoom') or ''
 
     # Models
     topics = Topic.objects.all()
@@ -120,3 +122,22 @@ def room_create(request):
     else:
         print("ERROR!")
     return Response(serializer.data)
+
+
+@api_view(['GET'])
+def topics(request):
+    searched_topic = request.GET.get("searchedTopic") or ""
+    topics = Topic.objects.filter(
+        name__icontains=searched_topic
+    )
+
+    list_topics = []   # sample [{name: Django, rooCount:2}, {...}]
+    for topic in topics:
+        topic_name = topic.name
+        topic_count = topic.room_set.all().count()
+        list_topics.append({
+            "name": topic_name,
+            "roomCount": topic_count
+        })
+
+    return Response(list_topics, status=status.HTTP_200_OK)

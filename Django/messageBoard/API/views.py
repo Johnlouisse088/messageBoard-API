@@ -115,13 +115,31 @@ def home(request):
 
 @api_view(['POST'])
 def room_create(request):
-    print("----test", request.data)
-    serializer = RoomSerializer(data=request.data)
-    if serializer.is_valid():
-        serializer.save()
-    else:
-        print("ERROR!")
-    return Response(serializer.data)
+
+    # Request payloads
+    req_name = request.data.get("room")
+    req_topic = request.data.get("topic")
+    req_description = request.data.get("description")
+    req_user = 1
+
+    # get topic or create new topic
+    topic, created = Topic.objects.get_or_create(name=req_topic)
+
+    # request data
+    request_data = {
+        "user": req_user,
+        "room": req_name,
+        "topic": topic.id,
+        "description": req_description
+    }
+
+    # serialize the request payload
+    room_serializer = RoomSerializer(data=request_data)
+
+    if room_serializer.is_valid():
+        room_serializer.save()
+        return Response(room_serializer.data, status=status.HTTP_200_OK)
+    return Response(room_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 @api_view(['GET'])

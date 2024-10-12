@@ -2,107 +2,103 @@ import React, { useEffect, useState } from 'react'
 
 function RoomCreate() {
 
-    const [topics, setTopics] = useState([]);
+    const [error, setError] = useState("")
+    const [topics, setTopics] = useState([])
     const [roomForm, setRoomForm] = useState({
         "room": "",
-        "description": "",
         "topic": "",
-        "user": 1
-    });
+        "description": ""
+    })
 
     const handleChange = (event) => {
         setRoomForm((currentForm) => {
             const { name, value } = event.target
             return { ...currentForm, [name]: value }
-        });
+        })
     }
 
-    const handleCreateRoom = (event) => {
+    async function handleSubmit(event) {
         event.preventDefault()
-        async function fetchData() {
-            try {
-                const response = await fetch(`http://127.0.0.1:8000/rooms/create/`, {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json"
-                    },
-                    body: JSON.stringify(roomForm)
-                });
-                // will reset roomFOrm if the submission is valid
-                if (response.ok) {
-                    console.log("reset room")
-                    setRoomForm({
-                        "room": "",
-                        "description": "",
-                        "topic": ""
-                    });
-                }
-            } catch (error) {
-                console.error(error)
+        try {
+            const response = await fetch(`http://127.0.0.1:8000/rooms/create/`, {
+                method: "POST",
+                headers: {
+                    "Content-type": "application/json"
+                },
+                body: JSON.stringify(roomForm)
+            })
+
+            if (response.ok) {
+                setRoomForm({
+                    "room": "",
+                    "topic": "",
+                    "description": ""
+                })
             }
+        } catch (error) {
+            console.error(error)
+            setError("Failed to create room!")
         }
-        fetchData()
     }
 
     useEffect(() => {
-        async function fetchTopics() {
+        async function fetchData() {
             try {
-                const response = await fetch(`http://127.0.0.1:8000/rooms/create/`);
-                const data = await response.json();
-                setTopics(data.topics);
-
+                const response = await fetch(`http://127.0.0.1:8000/topics`)
+                const data = await response.json()
+                setTopics(data)
             } catch (error) {
-                console.error(error);
+                console.error(error)
+                setError("Failed to load topics")
             }
         }
-        fetchTopics()
+        fetchData()
     }, [])
 
-
     return (
-        <form onSubmit={handleCreateRoom}>
-            <div>
+        <>
+            <form onSubmit={handleSubmit}>
                 <label>
-                    Room name:
+                    Room
                     <input
-                        type='text'
-                        name='room'
+                        type="text"
+                        name="room"
                         value={roomForm.room}
                         onChange={handleChange}
                     />
                 </label>
-            </div>
-            <div>
                 <label>
-                    Room Description:
+                    Topic
                     <input
-                        type='text'
-                        name='description'
+                        type="text"
+                        name="topic"
+                        list='topics-list'
+                        value={roomForm.topic}
+                        onChange={handleChange}
+                    />
+                    <datalist id="topics-list">
+                        {topics.map((topic, index) => (
+                            <option
+                                key={index}
+                                value={topic.name}
+                            />
+                        ))}
+                    </datalist>
+                </label>
+                <label>
+                    Description
+                    <input
+                        type="text"
+                        name="description"
                         value={roomForm.description}
                         onChange={handleChange}
                     />
                 </label>
-            </div>
-            <div>
-                <label>
-                    Topic:
-                    <input
-                        type='text'
-                        name='topic'
-                        value={roomForm.topic}
-                        list="topics"
-                        onChange={handleChange}
-                    />
-                </label>
-                <datalist id="topics">
-                    {topics.map((topic) => {
-                        return <option key={topic.id} value={topic.name} />
-                    })}
-                </datalist>
-            </div>
-            <button type='Submit'>Submit</button>
-        </form>
-    );
+                <button type="submit">Submit</button>
+            </form>
+            {error && <p>{error}</p>}
+        </>
+    )
 }
 
-export default RoomCreate;
+export default RoomCreate

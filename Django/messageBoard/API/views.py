@@ -1,8 +1,8 @@
 from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-from .models import Room, Topic, Message
-from .serializers import RoomSerializer, TopicSerializer, MessageSerializer
+from .models import Room, Topic, Message, User
+from .serializers import RoomSerializer, TopicSerializer, MessageSerializer, UserSerializer
 
 # Create your views here.
 
@@ -113,9 +113,27 @@ def home(request):
     return Response(context)
 
 
+@api_view(['GET'])
+def room(request, pk):
+    room = Room.objects.get(id=pk)
+    messages = room.message_set.all()
+    participants = room.participants.all()
+
+    room_serializer = RoomSerializer(room)
+    messages_serializer = MessageSerializer(messages, many=True)
+    participants_serializer = UserSerializer(participants, many=True)
+
+    context = {
+        "rooms": room_serializer.data,
+        "messages": messages_serializer.data,
+        "participants": participants_serializer.data
+    }
+
+    return Response(context, status=status.HTTP_200_OK)
+
+
 @api_view(['POST'])
 def room_create(request):
-
     # Request payloads
     req_name = request.data.get("room")
     req_topic = request.data.get("topic")

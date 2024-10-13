@@ -13,14 +13,14 @@ class User(AbstractUser):
     REQUIRED_FIELDS = ['username']
 
     def __str__(self):
-        return self.email
+        return str(self.email)
 
 
 class Topic(models.Model):
     name = models.CharField(max_length=50, blank=True, null=True)
 
     def __str__(self):
-        return self.name
+        return str(self.name)
 
 
 class Room(models.Model):
@@ -30,10 +30,10 @@ class Room(models.Model):
     description = models.TextField(blank=True, null=True)
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateField(auto_now=True)
-    # participants = models.ManyToManyField(User)
+    participants = models.ManyToManyField(User, related_name='participated_rooms')
 
     def __str__(self):
-        return self.room
+        return str(self.room)
 
 
 class Message(models.Model):
@@ -43,6 +43,4 @@ class Message(models.Model):
     updated = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return self.message
-
-
+        return str(self.message)

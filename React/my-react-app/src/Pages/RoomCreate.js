@@ -3,7 +3,9 @@ import React, { useEffect, useState } from 'react'
 function RoomCreate() {
 
     const [error, setError] = useState("")
+
     const [topics, setTopics] = useState([])
+
     const [roomForm, setRoomForm] = useState({
         "room": "",
         "topic": "",

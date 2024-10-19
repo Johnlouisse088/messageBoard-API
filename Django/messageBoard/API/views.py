@@ -96,7 +96,7 @@ def home(request):
     topics = Topic.objects.all()
     messages = Message.objects.all()
     rooms = Room.objects.filter(
-        room__icontains = searched_room
+        name__icontains = searched_room
     )
     # Serializers
     room_serializer = RoomSerializer(rooms, many=True)
@@ -118,16 +118,12 @@ def home(request):
 def room(request, pk):
     room = Room.objects.get(id=pk)
     messages = room.message_set.all()
-    participants = room.participants.all()
 
     room_serializer = RoomSerializer(room)
     messages_serializer = MessageSerializer(messages, many=True)
-    participants_serializer = UserSerializer(participants, many=True)
-
     context = {
-        "rooms": room_serializer.data,
-        "messages": messages_serializer.data,
-        "participants": participants_serializer.data
+        "room": room_serializer.data,
+        "messages": messages_serializer.data
     }
 
     return Response(context, status=status.HTTP_200_OK)

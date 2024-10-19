@@ -30,6 +30,7 @@ function Home() {
         fetchData()
     }, [])
 
+    console.log("rooms: ", rooms);
 
     return (
         <>
@@ -58,7 +59,7 @@ function Home() {
 
                     <ul>
                         {rooms.map(room => (
-                            <li key={room.id}>{room.room}</li>
+                            <li key={room.id}>{room.name}</li>
                         ))}
                     </ul>
                 </section>

@@ -5,12 +5,7 @@ from .models import Room, Topic, Message, User
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = '__all__'
-
-class RoomSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Room
-        fields = '__all__'
+        fields = ['id', 'username', 'email']
 
 
 class TopicSerializer(serializers.ModelSerializer):
@@ -22,4 +17,15 @@ class TopicSerializer(serializers.ModelSerializer):
 class MessageSerializer(serializers.ModelSerializer):
     class Meta:
         model = Message
-        fields = '__all__'
+        fields = ['id', 'room', 'message']
+
+
+class RoomSerializer(serializers.ModelSerializer):
+    user = UserSerializer()
+    topic = TopicSerializer()
+    participants = UserSerializer(many=True)
+
+    class Meta:
+        model = Room
+        fields = ['id', 'name', 'description', 'created', 'updated', 'user', 'topic', 'participants']
+

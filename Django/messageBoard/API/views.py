@@ -1,6 +1,7 @@
 from django.http import Http404
 from rest_framework import status
 from rest_framework.decorators import api_view
+from rest_framework.generics import get_object_or_404
 from rest_framework.response import Response
 from .models import Room, Topic, Message, User
 from .serializers import RoomSerializer, TopicSerializer, MessageSerializer, UserSerializer
@@ -114,23 +115,30 @@ def home(request):
     return Response(context)
 
 
-@api_view(['GET'])
+@api_view(['GET', 'POST'])
 def room(request, pk):
-    room = Room.objects.get(id=pk)
-    messages = room.message_set.all()
+    if request.method == 'GET':
+        room = Room.objects.get(id=pk)
+        messages = room.message_set.all()
 
-    room_serializer = RoomSerializer(room)
-    messages_serializer = MessageSerializer(messages, many=True)
-    context = {
-        "room": room_serializer.data,
-        "messages": messages_serializer.data
-    }
+        room_serializer = RoomSerializer(room)
+        messages_serializer = MessageSerializer(messages, many=True)
+        context = {
+            "room": room_serializer.data,
+            "messages": messages_serializer.data
+        }
+        return Response(context, status=status.HTTP_200_OK)
+    else:
+        message = MessageSerializer(data=request.data)
+        if message.is_valid():
+            message.save()
+            return Response(message.data, status=status.HTTP_201_CREATED)
+        return Response(message.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    return Response(context, status=status.HTTP_200_OK)
 
 
 @api_view(['POST'])
-def room_create(request):
+def create_room(request):
     # Request payloads
     req_name = request.data.get("room")
     req_topic = request.data.get("topic")
@@ -174,3 +182,21 @@ def topics(request):
         })
 
     return Response(list_topics, status=status.HTTP_200_OK)
+
+
+@api_view(['DELETE'])
+def delete_message(request, id):
+    # If the message object doesn't exist in database, it will raise 404
+    message = get_object_or_404(Message, id=id)
+
+    # Serialize the message before deletion if needed
+    message_serializer = MessageSerializer(message)
+
+    # Delete the message
+    message.delete()
+
+    # Return a response confirming deletion
+    return Response({'message': 'Message deleted successfully', 'deleted_message': message_serializer.data},
+                    status=status.HTTP_200_OK)
+
+

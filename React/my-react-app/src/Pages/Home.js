@@ -59,7 +59,11 @@ function Home() {
 
                     <ul>
                         {rooms.map(room => (
-                            <li key={room.id}>{room.name}</li>
+                            <li key={room.id}>
+                                <Link to={`/rooms/${room.id}`}>
+                                    {room.name}
+                                </Link>
+                            </li>
                         ))}
                     </ul>
                 </section>

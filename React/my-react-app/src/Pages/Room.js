@@ -1,15 +1,71 @@
 import React, { useEffect, useState } from 'react'
-import { useParams } from 'react-router-dom'
+import { useParams, Link } from 'react-router-dom'
+
 
 function Room() {
     const [room, setRoom] = useState({});
     const [messages, setMessages] = useState([]);
 
-    // const [replyMessage, setReplyMessage] = useState("")
-
     const param = useParams();
     const roomId = parseInt(param.id);
 
+    const [replyMessageForm, setReplyMessageForm] = useState({
+        'room': roomId,
+        'message': ''
+    });
+
+    const handleChange = (event) => {
+        setReplyMessageForm(currentMessageForm => {
+            const { name, value } = event.target
+            return { ...currentMessageForm, [name]: value }
+        });
+    }
+
+    // For GET methodd
+    async function fetchData() {
+        try {
+            const response = await fetch(`http://127.0.0.1:8000/rooms/${roomId}/`);
+            const data = await response.json();
+            setRoom(data.room);
+            setMessages(data.messages);
+
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
+    // useEffect
+    useEffect(() => {
+        fetchData();
+    }, [roomId]);
+
+    // For POST method
+    const handleSubmitMessage = (event) => {
+        event.preventDefault()
+        async function sendMessage() {
+            try {
+                const response = await fetch(`http://127.0.0.1:8000/rooms/${roomId}/`, {
+                    'method': 'POST',
+                    'headers': {
+                        'Content-type': 'application/json'
+                    },
+                    body: JSON.stringify(replyMessageForm)
+                });
+                if (response.ok) {
+                    setReplyMessageForm({
+                        'room': roomId,
+                        'message': ''
+                    })
+                    fetchData();
+                }
+            } catch (error) {
+                console.error(error);
+            }
+        }
+        sendMessage()
+    }
+
+    console.log('replyMessageForm: ', replyMessageForm);
     useEffect(() => {
         async function fetchData() {
             try {
@@ -17,7 +73,6 @@ function Room() {
                 const data = await response.json();
                 setRoom(data.room);
                 setMessages(data.messages);
-
                 console.log("data: ", data);
 
             } catch (error) {
@@ -38,15 +93,24 @@ function Room() {
             <h1>{room.topic ? room.topic.name : "No topic"}</h1>
             <div>
                 {messages.map((message) => (
-                    <div key={message.id}>{message.message}</div>
+                    <div key={message.id}>
+                        <Link
+                            to={`/messages/delete/${message.id}`}
+                            state={{ 'roomName': room.name, 'roomId': room.id, 'messageId': message.id, 'message': message.message }}
+                        >
+                            {message.message}
+                        </Link>
+                    </div>
                 ))}
-                {/* <form>  CONTINUE....
-                    <input    
+                <form onSubmit={handleSubmitMessage}>
+                    <input
                         type='text'
-                        name='replyMessage'
+                        name='message'
+                        value={replyMessageForm.message}
                         onChange={handleChange}
                     />
-                </form> */}
+                    <button type='submit'>Submit</button>
+                </form>
             </div>
         </>
     )

@@ -13,10 +13,12 @@ function Home() {
 
     const roomCount = Object.keys(rooms).length
 
+    console.log("Homepage")
+
     useEffect(() => {
         async function fetchData() {
             try {
-                const response = await fetch(`http://127.0.0.1:8000/`)
+                const response = await fetch(`http://127.0.0.1:8000/api/`)
                 const data = await response.json()
 
                 setRooms(data.rooms)
@@ -30,7 +32,6 @@ function Home() {
         fetchData()
     }, [])
 
-    console.log("rooms: ", rooms);
 
     return (
         <>

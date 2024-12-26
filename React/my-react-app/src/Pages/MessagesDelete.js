@@ -12,7 +12,7 @@ function MessagesDelete() {
     async function handleRemoveSubmit(event) {
         event.preventDefault()
         try {
-            const response = await fetch(`http://127.0.0.1:8000/messages/delete/${messageId}/`, {
+            const response = await fetch(`http://127.0.0.1:8000/api/messages/delete/${messageId}/`, {
                 method: 'DELETE',
                 headers: {
                     'Content-type': 'application/json'

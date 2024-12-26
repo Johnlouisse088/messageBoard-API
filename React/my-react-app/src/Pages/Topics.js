@@ -8,7 +8,7 @@ function Topics() {
     useEffect(() => {
         async function fetchData() {
             try {
-                const response = await fetch(`http://127.0.0.1:8000/topics/`)
+                const response = await fetch(`http://127.0.0.1:8000/api/topics/`)
                 const data = await response.json()
                 setTopics(data)
             } catch (error) {
@@ -26,7 +26,7 @@ function Topics() {
     async function handleSubmit(event) {
         event.preventDefault()
         try {
-            const response = await fetch(`http://localhost:8000/topics/?searchedTopic=${searchedTopic}`)
+            const response = await fetch(`http://localhost:8000/api/topics/?searchedTopic=${searchedTopic}`)
             const data = await response.json()
             setTopics(data)
         } catch (error) {

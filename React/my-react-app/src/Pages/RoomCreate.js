@@ -22,7 +22,7 @@ function RoomCreate() {
     async function handleSubmit(event) {
         event.preventDefault()
         try {
-            const response = await fetch(`http://127.0.0.1:8000/rooms/create/`, {
+            const response = await fetch(`http://127.0.0.1:8000/api/rooms/create/`, {
                 method: "POST",
                 headers: {
                     "Content-type": "application/json"
@@ -46,7 +46,7 @@ function RoomCreate() {
     useEffect(() => {
         async function fetchData() {
             try {
-                const response = await fetch(`http://127.0.0.1:8000/topics`)
+                const response = await fetch(`http://127.0.0.1:8000/api/topics`)
                 const data = await response.json()
                 setTopics(data)
             } catch (error) {

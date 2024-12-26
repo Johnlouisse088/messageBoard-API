@@ -1,4 +1,6 @@
-from django.http import Http404
+from django.contrib.auth import authenticate, login, logout
+from django.http import Http404, HttpResponse
+from django.views.decorators.csrf import csrf_exempt
 from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.generics import get_object_or_404
@@ -6,7 +8,25 @@ from rest_framework.response import Response
 from .models import Room, Topic, Message, User
 from .serializers import RoomSerializer, TopicSerializer, MessageSerializer, UserSerializer
 
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+from rest_framework_simplejwt.views import TokenObtainPairView
+
 # Create your views here.
+
+class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
+    @classmethod
+    def get_token(cls, user):
+        token = super().get_token(user)
+
+        token['name'] = user.username
+        token['email'] = user.email
+
+        return token
+
+
+class MyTokenObtainPairView(TokenObtainPairView):
+    serializer_class = MyTokenObtainPairSerializer
+
 
 @api_view(['GET'])
 def routes(request):
@@ -115,6 +135,48 @@ def home(request):
     return Response(context)
 
 
+@api_view(['POST'])
+def login_view(request):
+    req_email = request.data.get("email")
+    req_password = request.data.get("password")
+
+    user = authenticate(
+        email=req_email,
+        password=req_password
+    )
+
+    if user is not None:
+        login(request, user)
+        return Response({"message": "success"}, status=status.HTTP_200_OK)
+    return Response({"message": "denied"}, status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(['POST'])
+def logout_view(request):
+    logout(request)
+    user = request.user
+    print("test---- ", user.is_authenticated)
+    return Response({"message": "Successfully logged out"}, status=status.HTTP_200_OK)
+
+
+@api_view(['GET'])
+def check_login(request):
+    print("TEsttt")
+    user = request.user
+    print("testt2 ", user)
+    if user.is_authenticated:
+        print("testt3")
+        return Response({"message": "You already logged in"}, status=status.HTTP_200_OK)
+    print("test4")
+    return Response({"message": "You still didn't logged in"}, status=status.HTTP_401_UNAUTHORIZED)
+
+@api_view(['POST'])
+def register(request):
+    user = UserSerializer(data=request.data)
+    if user.is_valid():
+        user.save()
+        return Response(user.data, status=status.HTTP_201_CREATED)
+    return Response(user.errors, status=status.HTTP_400_BAD_REQUEST)
+
 @api_view(['GET', 'POST'])
 def room(request, pk):
     if request.method == 'GET':
@@ -130,6 +192,8 @@ def room(request, pk):
         return Response(context, status=status.HTTP_200_OK)
     else:
         message = MessageSerializer(data=request.data)
+        print("request.data: ", message.data)
+
         if message.is_valid():
             message.save()
             return Response(message.data, status=status.HTTP_201_CREATED)

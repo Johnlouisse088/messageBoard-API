@@ -11,28 +11,35 @@ import RoomCreate from './Pages/RoomCreate';
 import RoomUpdate from './Pages/RoomUpdate';
 import RoomDelete from './Pages/RoomDelete';
 import MessagesDelete from './Pages/MessagesDelete';
+import Logout from './Pages/Logout';
+import PrivateRoute from './Utils/PrivateRoute';
+import Authentication from './Context/Authentication';
 
 function App() {
   return (
     <>
-      <Routes>
-        <Route path='/' element={<Home />} />
-        <Route path='/login' element={<Login />} />
-        <Route path='/signup' element={<Signup />} />
-        <Route path='/settings' element={<Settings />} />
-        <Route path='/topics' element={<Topics />} />
-        <Route path='/profile/:id' element={<Profile />} />
+      <Authentication>
+        <Routes>
+          <Route path='/' element={<PrivateRoute Component={Home} />} />
+          <Route path='/login' element={<Login />} />
+          <Route path='/logout' element={<Logout />} />
+          <Route path='/signup' element={<Signup />} />
+          <Route path='/settings' element={<Settings />} />
+          <Route path='/topics' element={<Topics />} />
+          <Route path='/profile/:id' element={<Profile />} />
 
-        <Route path="/rooms" >  {/* Parent route */}
-          <Route index element={<Room />} />  {/* Renders only when parent route called (/rooms) */} {/*  currently no component existing, just for your reference of calling component when the parent route called */}
-          <Route path=':id' element={<Room />} /> {/* Render to specific room */}
-          <Route path='create' element={<RoomCreate />} />
-          <Route path='update/:id' element={<RoomUpdate />} />
-          <Route path='delete/:id' element={<RoomDelete />} />
-        </Route>
+          <Route path="/rooms" >  {/* Parent route */}
+            <Route index element={<Room />} />  {/* Renders only when parent route called (/rooms) */} {/*  currently no component existing, just for your reference of calling component when the parent route called */}
+            <Route path=':id' element={<Room />} /> {/* Render to specific room */}
+            <Route path='create' element={<RoomCreate />} />
+            <Route path='update/:id' element={<RoomUpdate />} />
+            <Route path='delete/:id' element={<RoomDelete />} />
+          </Route>
 
-        <Route path='/messages/delete/:id' element={<MessagesDelete />} />
-      </Routes>
+          <Route path='/messages/delete/:id' element={<MessagesDelete />} />
+
+        </Routes>
+      </Authentication>
     </>
   );
 }

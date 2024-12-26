@@ -6,6 +6,7 @@ function Room() {
     const [room, setRoom] = useState({});
     const [messages, setMessages] = useState([]);
 
+    // Get the room id in url
     const param = useParams();
     const roomId = parseInt(param.id);
 
@@ -24,7 +25,7 @@ function Room() {
     // For GET methodd
     async function fetchData() {
         try {
-            const response = await fetch(`http://127.0.0.1:8000/rooms/${roomId}/`);
+            const response = await fetch(`http://127.0.0.1:8000/api/rooms/${roomId}/`);
             const data = await response.json();
             setRoom(data.room);
             setMessages(data.messages);
@@ -44,7 +45,7 @@ function Room() {
         event.preventDefault()
         async function sendMessage() {
             try {
-                const response = await fetch(`http://127.0.0.1:8000/rooms/${roomId}/`, {
+                const response = await fetch(`http://127.0.0.1:8000/api/rooms/${roomId}/`, {
                     'method': 'POST',
                     'headers': {
                         'Content-type': 'application/json'
@@ -64,23 +65,6 @@ function Room() {
         }
         sendMessage()
     }
-
-    console.log('replyMessageForm: ', replyMessageForm);
-    useEffect(() => {
-        async function fetchData() {
-            try {
-                const response = await fetch(`http://127.0.0.1:8000/rooms/${roomId}/`);
-                const data = await response.json();
-                setRoom(data.room);
-                setMessages(data.messages);
-                console.log("data: ", data);
-
-            } catch (error) {
-                console.error(error);
-            }
-        }
-        fetchData();
-    }, [roomId]);
 
     return (
         <>

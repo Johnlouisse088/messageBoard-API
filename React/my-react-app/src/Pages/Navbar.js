@@ -1,8 +1,11 @@
 import React from 'react'
 
 import { useState } from 'react'
+import { Link } from 'react-router-dom'
 
 function Navbar({ setRooms }) {
+
+    const [profile, setProfile] = [{}]
 
     const [searchText, setSearchText] = useState("")
 
@@ -14,7 +17,7 @@ function Navbar({ setRooms }) {
         event.preventDefault()
         async function fetchData() {
             try {
-                const response = await fetch(`http://localhost:8000/?searchedRoom=${searchText}`)
+                const response = await fetch(`http://localhost:8000/api/?searchedRoom=${searchText}`)
                 const data = await response.json()
                 setRooms(data.rooms)
             } catch (error) {
@@ -46,11 +49,23 @@ function Navbar({ setRooms }) {
             </div>
             <div className='right-container'>
                 <div>
-                    <div>Login</div>
-                    {/* profile picture */}
-                    {/* username */}
-                    {/* user email */}
-                    {/* dropdown */}
+                    <div>
+                        {profile.name ? (
+                            <div>
+                                logon
+                            </div>
+                        ) : (
+                            <Link to='/login'>
+                                Login
+                            </Link>
+
+                        )}
+                    </div>
+                    <div>
+                        <Link to="/logout">
+                            Logout
+                        </Link>
+                    </div>
                 </div>
             </div>
         </div>

@@ -19,8 +19,9 @@ urlpatterns = [
     path("check_login/", views.check_login, name="check_login"),
     path("register/", views.register, name="register"),
 
-    path("rooms/<str:pk>/", views.room, name="room"),
     path("rooms/create/", views.create_room, name="create_room"),
+    path("rooms/<str:pk>/", views.room, name="room"),
+
 
     path("topics/", views.topics, name="topics"),
 

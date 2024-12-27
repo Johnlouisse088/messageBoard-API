@@ -13,8 +13,6 @@ function Home() {
 
     const roomCount = Object.keys(rooms).length
 
-    console.log("Homepage")
-
     useEffect(() => {
         async function fetchData() {
             try {

@@ -29,7 +29,7 @@ function RoomCreate() {
                 },
                 body: JSON.stringify(roomForm)
             })
-
+            console.log("response: ", response)
             if (response.ok) {
                 setRoomForm({
                     "room": "",

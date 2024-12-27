@@ -1,11 +1,12 @@
-import React from 'react'
+import React, { useContext } from 'react'
 
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
+import { AuthContext } from '../Context/Authentication'
 
 function Navbar({ setRooms }) {
 
-    const [profile, setProfile] = [{}]
+    const { authTokens, userAccessToken } = useContext(AuthContext)
 
     const [searchText, setSearchText] = useState("")
 
@@ -49,23 +50,22 @@ function Navbar({ setRooms }) {
             </div>
             <div className='right-container'>
                 <div>
-                    <div>
-                        {profile.name ? (
-                            <div>
-                                logon
-                            </div>
-                        ) : (
+                    <p>@{userAccessToken.name}</p>
+                </div>
+                <div>
+                    {authTokens ? (
+                        <div>
+                            <Link to="/logout">
+                                Logout
+                            </Link>
+                        </div>
+                    ) : (
+                        (
                             <Link to='/login'>
                                 Login
                             </Link>
-
-                        )}
-                    </div>
-                    <div>
-                        <Link to="/logout">
-                            Logout
-                        </Link>
-                    </div>
+                        )
+                    )}
                 </div>
             </div>
         </div>

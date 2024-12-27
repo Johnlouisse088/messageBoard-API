@@ -18,7 +18,7 @@ function Authentication({ children }) {
         const localStorageTokens = JSON.parse(localStorage.getItem('authTokens'))
         if (localStorageTokens) {
             setAuthTokens(localStorageTokens)
-            setUserAccessToken(localStorageTokens.access)
+            setUserAccessToken(jwtDecode(localStorageTokens.access))
             setUserRefreshToken(localStorageTokens.refresh)
             navigate('/')
         }
@@ -34,15 +34,19 @@ function Authentication({ children }) {
             })
             if (response.ok) {
                 const data = await response.json()
-                console.log("tokens: ", data)
                 setAuthTokens(data)
                 setUserAccessToken(jwtDecode(data.access))
                 setUserRefreshToken(data.refresh)
                 localStorage.setItem('authTokens', JSON.stringify(data))
                 navigate('/')
+            } else {
+                alert("session expired")
+                setAuthTokens(null)
+                setUserAccessToken(null)
+                setUserRefreshToken(null)
+                localStorage.removeItem('authTokens')
             }
         } catch (error) {
-            alert("session expired")
             console.error(error)
         }
     }

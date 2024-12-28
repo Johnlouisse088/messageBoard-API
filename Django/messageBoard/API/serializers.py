@@ -31,12 +31,41 @@ class MessageSerializer(serializers.ModelSerializer):
         fields = ['id', 'room', 'message']
 
 
+# class RoomSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = Room
+#         fields = '__all__'
+
+# class RoomSerializer(serializers.ModelSerializer):
+#     # Request should nested object
+#     # This is because the UserSerializer and TopicSerializer used in the RoomSerializer expect the full object, not just the primary key (ID).
+#     user = UserSerializer()
+#     topic = TopicSerializer()
+#     participants = UserSerializer(many=True)
+#
+#     class Meta:
+#         model = Room
+#         fields = ['id', 'name', 'description', 'created', 'updated', 'user', 'topic', 'participants']
+
 class RoomSerializer(serializers.ModelSerializer):
-    user = UserSerializer()
-    topic = TopicSerializer()
-    participants = UserSerializer(many=True)
+
+    # Request - It will expect an ID (not objects)
+    user = serializers.PrimaryKeyRelatedField(queryset=User.objects.all())
+    topic = serializers.PrimaryKeyRelatedField(queryset=Topic.objects.all())
 
     class Meta:
         model = Room
-        fields = ['id', 'name', 'description', 'created', 'updated', 'user', 'topic', 'participants']
+        fields = ['id', 'name', 'description', 'user', 'topic', 'participants']
+
+    # Response -  Override the output by the nested objects (not the ID only)
+    def to_representation(self, instance):
+        """
+        Customize the output to return nested objects for `user`, `topic`, and `participants`.
+        """
+        representation = super().to_representation(instance)
+        representation['user'] = UserSerializer(instance.user).data  # Include nested user details
+        representation['topic'] = TopicSerializer(instance.topic).data  # Include nested topic details
+        representation['participants'] = UserSerializer(instance.participants, many=True).data  # Include nested participants details
+        return representation
+
 

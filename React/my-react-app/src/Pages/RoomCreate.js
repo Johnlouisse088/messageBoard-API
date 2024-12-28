@@ -1,15 +1,20 @@
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
+import { AuthContext } from '../Context/Authentication'
+import { useNavigate } from 'react-router-dom'
 
 function RoomCreate() {
 
+    const { authTokens } = useContext(AuthContext)
+
+    const navigate = useNavigate()
+
     const [error, setError] = useState("")
-
     const [topics, setTopics] = useState([])
-
     const [roomForm, setRoomForm] = useState({
-        "room": "",
+        "name": "",
         "topic": "",
-        "description": ""
+        "description": "",
+        "participants": []
     })
 
     const handleChange = (event) => {
@@ -25,14 +30,16 @@ function RoomCreate() {
             const response = await fetch(`http://127.0.0.1:8000/api/rooms/create/`, {
                 method: "POST",
                 headers: {
-                    "Content-type": "application/json"
+                    "Content-type": "application/json",
+                    'Authorization': 'Bearer ' + String(authTokens.access)
                 },
                 body: JSON.stringify(roomForm)
             })
             console.log("response: ", response)
             if (response.ok) {
+                navigate('/')
                 setRoomForm({
-                    "room": "",
+                    "name": "",
                     "topic": "",
                     "description": ""
                 })
@@ -64,7 +71,7 @@ function RoomCreate() {
                     Room
                     <input
                         type="text"
-                        name="room"
+                        name="name"
                         value={roomForm.room}
                         onChange={handleChange}
                     />

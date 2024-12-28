@@ -34,11 +34,11 @@ function Authentication({ children }) {
             })
             if (response.ok) {
                 const data = await response.json()
+                console.log("------data: ", data.access)
                 setAuthTokens(data)
                 setUserAccessToken(jwtDecode(data.access))
                 setUserRefreshToken(data.refresh)
                 localStorage.setItem('authTokens', JSON.stringify(data))
-                navigate('/')
             } else {
                 alert("session expired")
                 setAuthTokens(null)

@@ -30,7 +30,7 @@ class Room(models.Model):
     description = models.TextField(blank=True, null=True)
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateField(auto_now=True)
-    participants = models.ManyToManyField(User, related_name='participated_rooms')
+    participants = models.ManyToManyField(User, related_name='participated_rooms', blank=True)
 
     def __str__(self):
         return str(self.name)

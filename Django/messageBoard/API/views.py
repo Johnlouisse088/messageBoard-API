@@ -2,8 +2,9 @@ from django.contrib.auth import authenticate, login, logout
 from django.http import Http404, HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework import status
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, permission_classes
 from rest_framework.generics import get_object_or_404
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from .models import Room, Topic, Message, User
 from .serializers import RoomSerializer, TopicSerializer, MessageSerializer, UserSerializer
@@ -202,12 +203,18 @@ def room(request, pk):
 
 
 @api_view(['POST'])
+# @permission_classes([IsAuthenticated])
 def create_room(request):
     # Request payloads
-    req_name = request.data.get("room")
+    req_name = request.data.get("name")
     req_topic = request.data.get("topic")
     req_description = request.data.get("description")
-    req_user = 1
+    req_user = request.user.id
+
+    print("--req_name: ", req_name)
+    print("--req_topic: ", req_topic)
+    print("--req_description: ", req_description)
+
 
     # get topic or create new topic
     topic, created = Topic.objects.get_or_create(name=req_topic)
@@ -215,7 +222,7 @@ def create_room(request):
     # request data
     request_data = {
         "user": req_user,
-        "room": req_name,
+        "name": req_name,
         "topic": topic.id,
         "description": req_description
     }

@@ -26,11 +26,11 @@ function App() {
           <Route path='/signup' element={<Signup />} />
           <Route path='/settings' element={<Settings />} />
           <Route path='/topics' element={<Topics />} />
-          <Route path='/profile/:id' element={<Profile />} />
+          <Route path='/profile/:id' element={<PrivateRoute Component={Profile} />} />
 
           <Route path="/rooms" >  {/* Parent route */}
-            <Route index element={<Room />} />  {/* Renders only when parent route called (/rooms) */} {/*  currently no component existing, just for your reference of calling component when the parent route called */}
-            <Route path=':id' element={<Room />} /> {/* Render to specific room */}
+            <Route index element={<PrivateRoute Component={Room} />} />  {/* Renders only when parent route called (/rooms) */} {/*  currently no component existing, just for your reference of calling component when the parent route called */}
+            <Route path=':id' element={<PrivateRoute Component={Room} />} /> {/* Render to specific room */}
             <Route path='create' element={<RoomCreate />} />
             <Route path='update/:id' element={<RoomUpdate />} />
             <Route path='delete/:id' element={<RoomDelete />} />

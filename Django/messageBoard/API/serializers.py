@@ -7,11 +7,12 @@ class UserSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True)  # password is write only
     class Meta:
         model = User
-        fields = ['id', 'username', 'email', 'password']
+        fields = ['id', 'username', 'email', 'bio', 'password']
 
     def create(self, validated_data):
         user = User(
             email=validated_data['email'],
+            bio=validated_data['bio'],
             username=validated_data.get('username', ''),
         )
         user.set_password(validated_data['password'])   # Hash   the password
@@ -28,24 +29,15 @@ class TopicSerializer(serializers.ModelSerializer):
 class MessageSerializer(serializers.ModelSerializer):
     class Meta:
         model = Message
-        fields = ['id', 'room', 'message']
+        fields = ['id', 'room', 'message', 'user']
 
-
-# class RoomSerializer(serializers.ModelSerializer):
-#     class Meta:
-#         model = Room
-#         fields = '__all__'
-
-# class RoomSerializer(serializers.ModelSerializer):
-#     # Request should nested object
-#     # This is because the UserSerializer and TopicSerializer used in the RoomSerializer expect the full object, not just the primary key (ID).
-#     user = UserSerializer()
-#     topic = TopicSerializer()
-#     participants = UserSerializer(many=True)
-#
-#     class Meta:
-#         model = Room
-#         fields = ['id', 'name', 'description', 'created', 'updated', 'user', 'topic', 'participants']
+    def to_representation(self, instance):
+        """
+        Customize the output to return nested objects for `user`, `topic`, and `participants`.
+        """
+        representation = super().to_representation(instance)
+        representation['user'] = UserSerializer(instance.user).data  # Include nested user details
+        return representation
 
 class RoomSerializer(serializers.ModelSerializer):
 
@@ -67,5 +59,10 @@ class RoomSerializer(serializers.ModelSerializer):
         representation['topic'] = TopicSerializer(instance.topic).data  # Include nested topic details
         representation['participants'] = UserSerializer(instance.participants, many=True).data  # Include nested participants details
         return representation
+
+
+
+
+
 
 

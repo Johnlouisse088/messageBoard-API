@@ -1,8 +1,12 @@
-import React, { useEffect, useState } from 'react'
-import { useParams, Link } from 'react-router-dom'
+import React, { useContext, useEffect, useState } from 'react'
+import { useParams, Link, useNavigate } from 'react-router-dom'
+import { AuthContext } from '../Context/Authentication';
 
 
 function Room() {
+
+    const { authTokens } = useContext(AuthContext)
+
     const [room, setRoom] = useState({});
     const [messages, setMessages] = useState([]);
 
@@ -15,6 +19,8 @@ function Room() {
         'message': ''
     });
 
+    const navigate = useNavigate()
+
     const handleChange = (event) => {
         setReplyMessageForm(currentMessageForm => {
             const { name, value } = event.target
@@ -25,7 +31,13 @@ function Room() {
     // For GET methodd
     async function fetchData() {
         try {
-            const response = await fetch(`http://127.0.0.1:8000/api/rooms/${roomId}/`);
+            const response = await fetch(`http://127.0.0.1:8000/api/rooms/${roomId}/`, {
+                method: 'GET',
+                headers: {
+                    'Content-type': 'application/json',
+                    'Authorization': 'Bearer ' + String(authTokens.access)
+                }
+            });
             const data = await response.json();
             setRoom(data.room);
             setMessages(data.messages);
@@ -48,7 +60,8 @@ function Room() {
                 const response = await fetch(`http://127.0.0.1:8000/api/rooms/${roomId}/`, {
                     'method': 'POST',
                     'headers': {
-                        'Content-type': 'application/json'
+                        'Content-type': 'application/json',
+                        'Authorization': 'Bearer ' + String(authTokens.access)
                     },
                     body: JSON.stringify(replyMessageForm)
                 });
@@ -82,7 +95,7 @@ function Room() {
                             to={`/messages/delete/${message.id}`}
                             state={{ 'roomName': room.name, 'roomId': room.id, 'messageId': message.id, 'message': message.message }}
                         >
-                            {message.message}
+                            {message.message} || {message.user.username}
                         </Link>
                     </div>
                 ))}

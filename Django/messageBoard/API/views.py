@@ -21,6 +21,7 @@ class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
 
         token['name'] = user.username
         token['email'] = user.email
+        token['bio'] = user.bio
 
         return token
 
@@ -178,7 +179,22 @@ def register(request):
         return Response(user.data, status=status.HTTP_201_CREATED)
     return Response(user.errors, status=status.HTTP_400_BAD_REQUEST)
 
+
+@api_view(['GET'])
+def profile(request):
+    user = request.user
+    user_room = user.room_set.all()
+    user_room_serializer = RoomSerializer(user_room, many=True)
+
+    context = {
+        'user_room': user_room_serializer.data
+    }
+
+    return Response(context, status=status.HTTP_200_OK)
+
+
 @api_view(['GET', 'POST'])
+@permission_classes([IsAuthenticated])
 def room(request, pk):
     if request.method == 'GET':
         room = Room.objects.get(id=pk)
@@ -192,9 +208,19 @@ def room(request, pk):
         }
         return Response(context, status=status.HTTP_200_OK)
     else:
-        message = MessageSerializer(data=request.data)
-        print("request.data: ", message.data)
+        req_room = request.data.get("room")
+        req_message = request.data.get("message")
+        req_user = request.user.id
 
+        print("req_user: ", req_user)
+
+        request_data = {
+            "user": req_user,
+            "room": req_room,
+            "message": req_message
+        }
+
+        message = MessageSerializer(data=request_data)
         if message.is_valid():
             message.save()
             return Response(message.data, status=status.HTTP_201_CREATED)
@@ -203,18 +229,13 @@ def room(request, pk):
 
 
 @api_view(['POST'])
-# @permission_classes([IsAuthenticated])
+@permission_classes([IsAuthenticated])   # Check if the user is authenticated
 def create_room(request):
     # Request payloads
     req_name = request.data.get("name")
     req_topic = request.data.get("topic")
     req_description = request.data.get("description")
-    req_user = request.user.id
-
-    print("--req_name: ", req_name)
-    print("--req_topic: ", req_topic)
-    print("--req_description: ", req_description)
-
+    req_user = request.user.id        # return id of the user
 
     # get topic or create new topic
     topic, created = Topic.objects.get_or_create(name=req_topic)

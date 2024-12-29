@@ -6,6 +6,8 @@ function PrivateRoute({ Component }) {
 
     const { userAccessToken } = useContext(AuthContext)
 
+
+
     return userAccessToken ? <Component /> : <Navigate to='/login' />
 }
 

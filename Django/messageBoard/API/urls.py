@@ -19,6 +19,8 @@ urlpatterns = [
     path("check_login/", views.check_login, name="check_login"),
     path("register/", views.register, name="register"),
 
+    path("profile/", views.profile, name="profile"),
+
     path("rooms/create/", views.create_room, name="create_room"),
     path("rooms/<str:pk>/", views.room, name="room"),
 

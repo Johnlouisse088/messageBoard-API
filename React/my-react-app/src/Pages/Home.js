@@ -3,7 +3,7 @@ import React from 'react'
 import Navbar from './Navbar'
 
 import { useState, useEffect } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 
 function Home() {
 
@@ -12,6 +12,8 @@ function Home() {
     const [messages, setMessages] = useState([])
 
     const roomCount = Object.keys(rooms).length
+
+    const navigate = useNavigate()
 
     useEffect(() => {
         async function fetchData() {
@@ -28,6 +30,7 @@ function Home() {
             }
         }
         fetchData()
+        navigate('/')
     }, [])
 
 

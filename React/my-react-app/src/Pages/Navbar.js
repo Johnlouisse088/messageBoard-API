@@ -50,7 +50,9 @@ function Navbar({ setRooms }) {
             </div>
             <div className='right-container'>
                 <div>
-                    <p>@{userAccessToken.name}</p>
+                    <Link to={`/profile/${userAccessToken.user_id}`}>
+                        <p>@{userAccessToken.name}</p>
+                    </Link>
                 </div>
                 <div>
                     {authTokens ? (

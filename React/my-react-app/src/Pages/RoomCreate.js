@@ -35,10 +35,9 @@ function RoomCreate() {
                 },
                 body: JSON.stringify(roomForm)
             })
-            console.log("response: ", response)
             if (response.ok) {
-                navigate('/')
-                setRoomForm({
+                navigate('/')         // navigate the homepage after the room created
+                setRoomForm({         // reset the form after the room created
                     "name": "",
                     "topic": "",
                     "description": ""

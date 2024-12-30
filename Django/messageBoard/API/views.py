@@ -257,6 +257,14 @@ def create_room(request):
     return Response(room_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
+@api_view(['DELETE'])
+@permission_classes([IsAuthenticated])
+def delete_room(request, room_id):
+    room = Room.objects.get(id=room_id)
+    room.delete()
+    return Response("Deleted")
+
+
 @api_view(['GET'])
 def topics(request):
     searched_topic = request.GET.get("searchedTopic") or ""

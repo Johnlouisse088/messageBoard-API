@@ -22,6 +22,7 @@ urlpatterns = [
     path("profile/", views.profile, name="profile"),
 
     path("rooms/create/", views.create_room, name="create_room"),
+    path("rooms/delete/<int:room_id>/", views.delete_room, name="delete_room"),
     path("rooms/<str:pk>/", views.room, name="room"),
 
 

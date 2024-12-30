@@ -33,7 +33,7 @@ function App() {
             <Route path=':id' element={<PrivateRoute Component={Room} />} /> {/* Render to specific room */}
             <Route path='create' element={<RoomCreate />} />
             <Route path='update/:id' element={<RoomUpdate />} />
-            <Route path='delete/:id' element={<RoomDelete />} />
+            <Route path='delete/:id' element={<PrivateRoute Component={RoomDelete} />} />
           </Route>
 
           <Route path='/messages/delete/:id' element={<MessagesDelete />} />

@@ -9,6 +9,7 @@ function Room() {
 
     const [room, setRoom] = useState({});
     const [messages, setMessages] = useState([]);
+    const [deleteStatus, setDeleteStatus] = useState("")
 
     // Get the room id in url
     const param = useParams();
@@ -79,6 +80,8 @@ function Room() {
         sendMessage()
     }
 
+
+
     return (
         <>
             <p>{room.name ? room.description : "No description"}</p>
@@ -86,9 +89,13 @@ function Room() {
                 <h4>HOSTED BY</h4>
                 <h4>@{room.user ? room.user.username : "No user"}</h4>
             </div>
-            <p>{room.name ? room.name : "No room"}</p>
-            <h1>{room.topic ? room.topic.name : "No topic"}</h1>
+            <Link to={`/rooms/delete/${room.id}`}>
+                X
+            </Link>
+            <p>Room: {room.name ? room.name : "No room"}</p>
+            <p>Topic: {room.topic ? room.topic.name : "No topic"}</p>
             <div>
+                <h3>Messages:</h3>
                 {messages.map((message) => (
                     <div key={message.id}>
                         <Link

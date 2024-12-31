@@ -13,7 +13,7 @@ function Logout() {
         setAuthTokens(null)
         setUserAccessToken(null)
         setUserRefreshToken(null)
-        navigate('/')
+        navigate('/login')
     }
 
     return (

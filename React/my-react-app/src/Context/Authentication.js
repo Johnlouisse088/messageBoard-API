@@ -20,7 +20,6 @@ function Authentication({ children }) {
             setAuthTokens(localStorageTokens)
             setUserAccessToken(jwtDecode(localStorageTokens.access))
             setUserRefreshToken(localStorageTokens.refresh)
-            navigate('/')
         }
     }, [])
 

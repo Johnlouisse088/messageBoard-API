@@ -1,15 +1,18 @@
-import React from 'react'
+import React, { useContext } from 'react'
 
 import Navbar from './Navbar'
 
 import { useState, useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
+import { AuthContext } from '../Context/Authentication'
 
 function Home() {
 
     const [rooms, setRooms] = useState([])
     const [topics, setTopics] = useState([])
     const [messages, setMessages] = useState([])
+
+    const { authTokens, accessTokenExpired } = useContext(AuthContext)
 
     const roomCount = Object.keys(rooms).length
 
@@ -18,12 +21,18 @@ function Home() {
     useEffect(() => {
         async function fetchData() {
             try {
-                const response = await fetch(`http://127.0.0.1:8000/api/`)
-                const data = await response.json()
-
-                setRooms(data.rooms)
-                setTopics(data.topics)
-                setMessages(data.messages)
+                const response = await fetch(`http://127.0.0.1:8000/api/`, {
+                    method: 'GET',
+                    headers: { 'Authorization': 'Bearer ' + String(authTokens.access) }
+                })
+                if (response.ok) {
+                    const data = await response.json()
+                    setRooms(data.rooms)
+                    setTopics(data.topics)
+                    setMessages(data.messages)
+                } else {
+                    accessTokenExpired()
+                }
 
             } catch (error) {
                 console.error(error)

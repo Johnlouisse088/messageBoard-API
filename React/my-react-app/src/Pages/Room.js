@@ -5,11 +5,10 @@ import { AuthContext } from '../Context/Authentication';
 
 function Room() {
 
-    const { authTokens } = useContext(AuthContext)
+    const { authTokens, accessTokenExpired } = useContext(AuthContext)
 
     const [room, setRoom] = useState({});
     const [messages, setMessages] = useState([]);
-    const [deleteStatus, setDeleteStatus] = useState("")
 
     // Get the room id in url
     const param = useParams();
@@ -19,8 +18,6 @@ function Room() {
         'room': roomId,
         'message': ''
     });
-
-    const navigate = useNavigate()
 
     const handleChange = (event) => {
         setReplyMessageForm(currentMessageForm => {
@@ -35,13 +32,18 @@ function Room() {
             const response = await fetch(`http://127.0.0.1:8000/api/rooms/${roomId}/`, {
                 method: 'GET',
                 headers: {
-                    'Content-type': 'application/json',
-                    'Authorization': 'Bearer ' + String(authTokens.access)
-                }
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + String(authTokens.access),
+                },
             });
-            const data = await response.json();
-            setRoom(data.room);
-            setMessages(data.messages);
+            if (response.ok) {
+                const data = await response.json();
+                setRoom(data.room);
+                setMessages(data.messages);
+            } else {
+                accessTokenExpired()
+            }
+
 
         } catch (error) {
             console.error(error);
@@ -59,8 +61,8 @@ function Room() {
         async function sendMessage() {
             try {
                 const response = await fetch(`http://127.0.0.1:8000/api/rooms/${roomId}/`, {
-                    'method': 'POST',
-                    'headers': {
+                    method: 'POST',
+                    headers: {
                         'Content-type': 'application/json',
                         'Authorization': 'Bearer ' + String(authTokens.access)
                     },
@@ -79,7 +81,6 @@ function Room() {
         }
         sendMessage()
     }
-
 
 
     return (

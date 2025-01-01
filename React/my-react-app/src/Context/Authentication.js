@@ -13,6 +13,16 @@ function Authentication({ children }) {
 
     const navigate = useNavigate()
 
+    // If the access token is expired
+    const accessTokenExpired = () => {
+        navigate('/login')
+        alert('Session expired, please login again')
+        setAuthTokens(null)
+        setUserAccessToken(null)
+        setUserRefreshToken(null)
+        localStorage.removeItem('authTokens')
+    }
+
     // When the page is refreshed
     useEffect(() => {
         const localStorageTokens = JSON.parse(localStorage.getItem('authTokens'))
@@ -35,7 +45,6 @@ function Authentication({ children }) {
             })
             if (response.ok) {
                 const data = await response.json()
-                console.log("------data: ", data.access)
                 setAuthTokens(data)
                 setUserAccessToken(jwtDecode(data.access))
                 setUserRefreshToken(data.refresh)
@@ -69,7 +78,8 @@ function Authentication({ children }) {
         userRefreshToken,
         setAuthTokens,
         setUserAccessToken,
-        setUserRefreshToken
+        setUserRefreshToken,
+        accessTokenExpired
     }
     return (
         <AuthContext.Provider value={context}>

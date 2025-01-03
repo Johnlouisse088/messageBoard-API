@@ -10,6 +10,14 @@ function Authentication({ children }) {
     const [authTokens, setAuthTokens] = useState()
     const [userAccessToken, setUserAccessToken] = useState(null)
     const [userRefreshToken, setUserRefreshToken] = useState(null)
+    const [topics, setTopics] = useState([])
+    const [error, setError] = useState("")
+    const [roomForm, setRoomForm] = useState({
+        "name": "",
+        "topic": "",
+        "description": "",
+        "participants": []
+    })
 
     const navigate = useNavigate()
 
@@ -71,6 +79,51 @@ function Authentication({ children }) {
         }
     }, [authTokens])
 
+    const handleChange = (event) => {
+        setRoomForm((currentForm) => {
+            const { name, value } = event.target
+            return { ...currentForm, [name]: value }
+        })
+    }
+
+    // Create room
+    async function handleSubmit(event) {
+        event.preventDefault()
+        try {
+            const response = await fetch(`http://127.0.0.1:8000/api/rooms/create/`, {
+                method: "POST",
+                headers: {
+                    "Content-type": "application/json",
+                    'Authorization': 'Bearer ' + String(authTokens.access)
+                },
+                body: JSON.stringify(roomForm)
+            })
+            if (response.ok) {
+                navigate('/')         // navigate the homepage after the room created
+                setRoomForm({         // reset the form after the room created
+                    "name": "",
+                    "topic": "",
+                    "description": ""
+                })
+            }
+        } catch (error) {
+            console.error(error)
+            setError("Failed to create room!")
+        }
+    }
+
+    // Fetch topic for create room form
+    async function fetchTopic() {
+        try {
+            const response = await fetch(`http://127.0.0.1:8000/api/topics`)
+            const data = await response.json()
+            setTopics(data)
+        } catch (error) {
+            console.error(error)
+            setError("Failed to load topics")
+        }
+    }
+
 
     const context = {
         authTokens,
@@ -79,7 +132,14 @@ function Authentication({ children }) {
         setAuthTokens,
         setUserAccessToken,
         setUserRefreshToken,
-        accessTokenExpired
+        handleChange,
+        handleSubmit,
+        roomForm,
+        fetchTopic,
+        topics,
+        error,
+        accessTokenExpired,
+
     }
     return (
         <AuthContext.Provider value={context}>

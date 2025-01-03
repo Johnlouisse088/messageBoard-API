@@ -257,11 +257,33 @@ def create_room(request):
     return Response(room_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
+@api_view(['PUT'])
+@permission_classes([IsAuthenticated])
+def update_room(request, room_id):
+
+    room = Room.objects.get(id=room_id)
+    req_topic = request.data.get('topic')
+    topic, _ = Topic.objects.get_or_create(name=req_topic)
+
+    room.name = request.data.get('name', room.name)
+    room.topic = topic
+    room.description = request.data.get('description', room.description)
+
+    req_participants = request.data.get('participants', [])
+    if req_participants:
+        room.participants.set(req_participants)
+
+    room.save()
+
+    room_serializer = RoomSerializer(room)
+    return Response(room_serializer.data, status=status.HTTP_200_OK)
+
+
 @api_view(['DELETE'])
 @permission_classes([IsAuthenticated])
 def delete_room(request, room_id):
-    room = Room.objects.get(id=room_id)
-    room.delete()
+    deleting_room = Room.objects.get(id=room_id)
+    deleting_room.delete()
     return Response("Deleted")
 
 

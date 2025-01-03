@@ -90,9 +90,17 @@ function Room() {
                 <h4>HOSTED BY</h4>
                 <h4>@{room.user ? room.user.username : "No user"}</h4>
             </div>
-            <Link to={`/rooms/delete/${room.id}`}>
-                X
-            </Link>
+            <p>
+                <Link to={`/rooms/delete/${room.id}`}>
+                    Delete
+                </Link>
+                ||
+                <Link
+                    to={`/rooms/update/${room.id}`}
+                    state={{ roomUpdate: room }}>
+                    Update
+                </Link>
+            </p>
             <p>Room: {room.name ? room.name : "No room"}</p>
             <p>Topic: {room.topic ? room.topic.name : "No topic"}</p>
             <div>

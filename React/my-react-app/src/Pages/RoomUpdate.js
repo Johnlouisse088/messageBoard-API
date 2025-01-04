@@ -13,8 +13,10 @@ function RoomUpdate() {
     const roomId = parseInt(params.id)
 
     // States
-    const { authTokens, topics, error } = useContext(AuthContext)
+    const { authTokens, topics } = useContext(AuthContext)
     const [roomUpdateRoom, setRoomUpdateRoom] = useState(roomUpdate)
+
+    console.log('roomUpdate: ', roomUpdate)
 
 
     // navigate
@@ -40,13 +42,20 @@ function RoomUpdate() {
 
     const handleChange = (event) => {
         const { name, value } = event.target
-        setRoomUpdateRoom((currentForm) => { return { ...currentForm, [name]: value } })
+        setRoomUpdateRoom((currentForm) => {
+            if ([name] == 'topic') {
+                return { ...currentForm, [name]: { name: value } }
+            } else {
+                return { ...currentForm, [name]: value }
+            }
+        })
     }
 
     const handleSubmit = (event) => {
         event.preventDefault()
         updateData()
     }
+
 
     return (
         <div>
@@ -67,14 +76,14 @@ function RoomUpdate() {
                         type="text"
                         name="topic"
                         list='topics-list'
-                        value={roomUpdateRoom.topic.name}
+                        value={roomUpdateRoom.topic?.name || ''}
                         onChange={handleChange}
                     />
                     <datalist id="topics-list">
                         {topics.map((topic, index) => (
                             <option
                                 key={index}
-                                value={roomUpdateRoom.topic.name}
+                                value={topic.name}
                             />
                         ))}
                     </datalist>

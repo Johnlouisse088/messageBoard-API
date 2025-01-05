@@ -42,7 +42,7 @@ function Login() {
             console.error(error)
         }
     }
-    console.log("-------log in")
+
     return (
         <>
             <div>

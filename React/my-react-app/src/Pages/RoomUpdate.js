@@ -42,13 +42,7 @@ function RoomUpdate() {
 
     const handleChange = (event) => {
         const { name, value } = event.target
-        setRoomUpdateRoom((currentForm) => {
-            if ([name] == 'topic') {
-                return { ...currentForm, [name]: { name: value } }
-            } else {
-                return { ...currentForm, [name]: value }
-            }
-        })
+        setRoomUpdateRoom((currentForm) => { return { ...currentForm, [name]: value } })
     }
 
     const handleSubmit = (event) => {
@@ -76,7 +70,7 @@ function RoomUpdate() {
                         type="text"
                         name="topic"
                         list='topics-list'
-                        value={roomUpdateRoom.topic?.name || ''}
+                        value={roomUpdateRoom.topic?.name || roomUpdateRoom.topic}
                         onChange={handleChange}
                     />
                     <datalist id="topics-list">

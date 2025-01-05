@@ -77,7 +77,7 @@ function Authentication({ children }) {
             const interval = setInterval(refreshTokens, convertedMinutes)
             return () => clearInterval(interval)
         }
-    }, [authTokens])
+    }, [])
 
     const handleChange = (event) => {
         setRoomForm((currentForm) => {

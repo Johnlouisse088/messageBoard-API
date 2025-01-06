@@ -1,11 +1,17 @@
 import React, { useContext, useEffect, useState } from 'react'
 import { AuthContext } from '../Context/Authentication'
+import { Link, useLocation } from 'react-router-dom';
 
 function Profile() {
 
+    const [rooms, setRooms] = useState([])
+
     const { authTokens, userAccessToken } = useContext(AuthContext)
 
-    const [rooms, setRooms] = useState([])
+    const location = useLocation()
+    const { userInfo } = location.state || {}
+
+    console.log('userInfo: ', userInfo)
 
     useEffect(() => {
         async function fetchData() {
@@ -17,7 +23,7 @@ function Profile() {
                     }
                 })
                 const data = await response.json()
-                console.log('data: ', data.user_room)
+
                 setRooms(data.user_room)
             } catch (error) {
                 console.error(error)
@@ -26,15 +32,23 @@ function Profile() {
         fetchData()
     }, [])
 
-
     return (
         <div>
             <h1>Profile</h1>
-            <p>Name: {userAccessToken.name}</p>
-            <p>Email: {userAccessToken.email} </p>
-            <p>Description: {userAccessToken.bio} </p>
+            <p>Name: {userInfo.name}</p>
+            <p>Email: {userInfo.email} </p>
+            <p>Description: {userInfo.bio} </p>
 
-            <h2>Rooms hosted by {userAccessToken.name}</h2>
+            {userAccessToken.name === userInfo.username ? (
+                <Link
+                    to={`/profile/update/${userInfo.id}`}
+                    state={{ profileInfo: userInfo }}>
+                    <h4>Update Profile</h4>
+                </Link>
+            ) : null}
+
+
+            <h2>Rooms hosted by {userInfo.name}</h2>
             <ul>
                 {rooms.map(room => {
                     return <li key={room.id}>{room.name}</li>

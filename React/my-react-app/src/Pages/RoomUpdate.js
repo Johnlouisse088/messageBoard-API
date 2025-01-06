@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useContext, useState } from 'react'
 import { useLocation, useNavigate, useParams } from 'react-router-dom'
 import { AuthContext } from '../Context/Authentication'
 
@@ -16,12 +16,22 @@ function RoomUpdate() {
     const { authTokens, topics } = useContext(AuthContext)
     const [roomUpdateRoom, setRoomUpdateRoom] = useState(roomUpdate)
 
-    console.log('roomUpdate: ', roomUpdate)
-
-
     // navigate
     const navigate = useNavigate()
 
+    // handle change
+    const handleChange = (event) => {
+        const { name, value } = event.target
+        setRoomUpdateRoom((currentForm) => { return { ...currentForm, [name]: value } })
+    }
+
+    // When the user submit the form it calls the updateData form
+    const handleSubmit = (event) => {
+        event.preventDefault()
+        updateData()
+    }
+
+    // Sending data from the form to backend
     async function updateData() {
         try {
             const response = await fetch(`http://127.0.0.1:8000/api/rooms/update/${roomId}/`, {
@@ -38,16 +48,6 @@ function RoomUpdate() {
         } catch (error) {
             console.error(error)
         }
-    }
-
-    const handleChange = (event) => {
-        const { name, value } = event.target
-        setRoomUpdateRoom((currentForm) => { return { ...currentForm, [name]: value } })
-    }
-
-    const handleSubmit = (event) => {
-        event.preventDefault()
-        updateData()
     }
 
 

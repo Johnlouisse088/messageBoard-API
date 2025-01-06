@@ -1,11 +1,11 @@
-import React, { useContext, useState, useEffect } from 'react'
+import React, { useContext, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { AuthContext } from './../Context/Authentication';
 import { jwtDecode } from 'jwt-decode'
 import { useNavigate } from 'react-router-dom';
 
 function Login() {
-    const { authTokens, userRefreshToken, setAuthTokens, setUserAccessToken, setUserRefreshToken } = useContext(AuthContext)
+    const { setAuthTokens, setUserAccessToken, setUserRefreshToken } = useContext(AuthContext)
     const [loginForm, setLoginForm] = useState({ email: '', password: '' })
 
     const navigate = useNavigate()

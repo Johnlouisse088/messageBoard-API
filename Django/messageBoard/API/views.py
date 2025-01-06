@@ -192,6 +192,20 @@ def profile(request):
 
     return Response(context, status=status.HTTP_200_OK)
 
+@api_view(['PUT'])
+def update_profile(request, profile_id):
+    user_info = User.objects.get(id=profile_id)
+
+    user_info.name = request.data.get('name', user_info.name)
+    user_info.email = request.data.get('email', user_info.email)
+    user_info.bio = request.data.get('bio', user_info.bio)
+
+    user_info.save()
+
+    user_serializer = UserSerializer(user_info)
+
+    return Response(user_serializer.data, status=status.HTTP_200_OK)
+
 
 @api_view(['GET', 'POST'])
 @permission_classes([IsAuthenticated])

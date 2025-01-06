@@ -7,6 +7,7 @@ import Signup from './Pages/Signup';
 import Settings from './Pages/Settings';
 import Topics from './Pages/Topics';
 import Profile from './Pages/Profile';
+import ProfileUpdate from './Pages/ProfileUpdate';
 import RoomCreate from './Pages/RoomCreate';
 import RoomUpdate from './Pages/RoomUpdate';
 import RoomDelete from './Pages/RoomDelete';
@@ -27,6 +28,7 @@ function App() {
           <Route path='/settings' element={<Settings />} />
           <Route path='/topics' element={<Topics />} />
           <Route path='/profile/:id' element={<PrivateRoute Component={Profile} />} />
+          <Route path='/profile/update/:id' element={<PrivateRoute Component={ProfileUpdate} />} />
 
           <Route path="/rooms" >  {/* Parent route */}
             <Route index element={<PrivateRoute Component={Room} />} />  {/* Renders only when parent route called (/rooms) */} {/*  currently no component existing, just for your reference of calling component when the parent route called */}

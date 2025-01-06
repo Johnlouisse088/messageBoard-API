@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react'
-import { useParams, Link, useNavigate } from 'react-router-dom'
+import { useParams, Link } from 'react-router-dom'
 import { AuthContext } from '../Context/Authentication';
 
 
@@ -26,7 +26,7 @@ function Room() {
         });
     }
 
-    // For GET methodd
+    // For GET method
     async function fetchData() {
         try {
             const response = await fetch(`http://127.0.0.1:8000/api/rooms/${roomId}/`, {
@@ -81,14 +81,18 @@ function Room() {
         }
         sendMessage()
     }
-
-
+    console.log("user: ", room.user)
     return (
         <>
             <p>{room.name ? room.description : "No description"}</p>
             <div>
                 <h4>HOSTED BY</h4>
-                <h4>@{room.user ? room.user.username : "No user"}</h4>
+                <Link
+                    to={`/profile/${room.user?.id}`}
+                    state={{ userInfo: room.user }}>
+                    <h4>@{room.user ? room.user.name : "No user"}</h4>
+                </Link>
+
             </div>
             <p>
                 <Link to={`/rooms/delete/${room.id}`}>

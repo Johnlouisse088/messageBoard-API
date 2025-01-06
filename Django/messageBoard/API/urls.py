@@ -20,6 +20,7 @@ urlpatterns = [
     path("register/", views.register, name="register"),
 
     path("profile/", views.profile, name="profile"),
+    path("profile/update/<int:profile_id>/", views.update_profile, name="update_profile"),
 
     path("rooms/create/", views.create_room, name="create_room"),
     path("rooms/update/<int:room_id>/", views.update_room, name="update_room"),

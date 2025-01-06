@@ -4,16 +4,17 @@ from .models import Room, Topic, Message, User
 
 class UserSerializer(serializers.ModelSerializer):
 
-    password = serializers.CharField(write_only=True)  # password is write only
+    password = serializers.CharField(write_only=True)  # password is writing only
     class Meta:
         model = User
-        fields = ['id', 'username', 'email', 'bio', 'password']
+        fields = ['id', 'name', 'email', 'bio', 'username', 'password']
 
     def create(self, validated_data):
         user = User(
             email=validated_data['email'],
+            username=validated_data['username'],
             bio=validated_data['bio'],
-            username=validated_data.get('username', ''),
+            name=validated_data.get('name', ''),
         )
         user.set_password(validated_data['password'])   # Hash   the password
         user.save()

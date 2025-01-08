@@ -4,8 +4,7 @@ import { useLocation, useNavigate } from 'react-router-dom'
 function MessagesDelete() {
 
     const location = useLocation()
-    const { message, messageId, roomName, roomId } = location.state || {}
-    console.log('location: ', location)
+    const { message, messageId, roomId } = location.state || {}
 
     const navigate = useNavigate();
 

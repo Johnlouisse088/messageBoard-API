@@ -26,7 +26,7 @@ function Room() {
         });
     }
 
-    // For GET method
+    // For Room and Message
     async function fetchData() {
         try {
             const response = await fetch(`http://127.0.0.1:8000/api/rooms/${roomId}/`, {
@@ -81,15 +81,14 @@ function Room() {
         }
         sendMessage()
     }
-    console.log("user: ", room.user)
+
     return (
         <>
             <p>{room.name ? room.description : "No description"}</p>
             <div>
                 <h4>HOSTED BY</h4>
                 <Link
-                    to={`/profile/${room.user?.id}`}
-                    state={{ userInfo: room.user }}>
+                    to={`/profile/${room.user?.id}`}>
                     <h4>@{room.user ? room.user.name : "No user"}</h4>
                 </Link>
 
@@ -115,7 +114,11 @@ function Room() {
                             to={`/messages/delete/${message.id}`}
                             state={{ 'roomName': room.name, 'roomId': room.id, 'messageId': message.id, 'message': message.message }}
                         >
-                            {message.message} || {message.user.username}
+                            {message.message}
+                        </Link>
+                        ||
+                        <Link to={`/profile/${room.user.id}`}>
+                            {message.user.username}
                         </Link>
                     </div>
                 ))}

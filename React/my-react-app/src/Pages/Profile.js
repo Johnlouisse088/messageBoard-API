@@ -4,14 +4,10 @@ import { Link, useLocation } from 'react-router-dom';
 
 function Profile() {
 
+    const [userInfo, setUserInfo] = useState({})
     const [rooms, setRooms] = useState([])
 
     const { authTokens, userAccessToken } = useContext(AuthContext)
-
-    const location = useLocation()
-    const { userInfo } = location.state || {}
-
-    console.log('userInfo: ', userInfo)
 
     useEffect(() => {
         async function fetchData() {
@@ -23,7 +19,7 @@ function Profile() {
                     }
                 })
                 const data = await response.json()
-
+                setUserInfo(data.user_info)
                 setRooms(data.user_room)
             } catch (error) {
                 console.error(error)

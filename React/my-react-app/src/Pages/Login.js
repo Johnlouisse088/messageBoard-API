@@ -18,7 +18,6 @@ function Login() {
 
     // Login
     async function handleSubmit(event) {
-        console.log("submit:")
         event.preventDefault()
         try {
             const response = await fetch(`http://127.0.0.1:8000/api/token/`, {

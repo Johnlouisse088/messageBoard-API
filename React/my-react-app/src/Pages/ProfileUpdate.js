@@ -42,7 +42,7 @@ function ProfileUpdate() {
                 body: JSON.stringify(userInfo)
             })
             if (response.ok) {
-                navigate(`/profile/${profileId}`) // FIX HERE!
+                navigate(`/profile/${profileId}`)
             }
         } catch (error) {
             console.error(error)

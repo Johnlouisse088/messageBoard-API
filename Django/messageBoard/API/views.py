@@ -183,11 +183,15 @@ def register(request):
 @api_view(['GET'])
 def profile(request):
     user = request.user
+    user_info = User.objects.get(id=user.id)
     user_room = user.room_set.all()
+
     user_room_serializer = RoomSerializer(user_room, many=True)
+    user_info_serializer = UserSerializer(user_info)
 
     context = {
-        'user_room': user_room_serializer.data
+        'user_room': user_room_serializer.data,
+        'user_info': user_info_serializer.data
     }
 
     return Response(context, status=status.HTTP_200_OK)

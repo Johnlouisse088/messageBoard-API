@@ -10,7 +10,7 @@ function ProfileUpdate() {
 
     // Get the info of the user
     const location = useLocation()
-    const { profileInfo } = location.state || {}
+    const { profileInfo } = location.state
 
     // Assigned the profileInfo in state
     const [userInfo, setUserInfo] = useState(profileInfo)
@@ -52,7 +52,15 @@ function ProfileUpdate() {
     return (
         <div>
             <form onSubmit={handleSubmit}>
-                <label htmlFor='name'>Username</label>
+                <label htmlFor='username'>Username</label>
+                <input
+                    type='text'
+                    id='username'
+                    onChange={handleChange}
+                    name='username'
+                    value={userInfo.username}
+                />
+                <label htmlFor='name'>Name</label>
                 <input
                     type='text'
                     id='name'

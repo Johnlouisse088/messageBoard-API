@@ -19,7 +19,7 @@ urlpatterns = [
     path("check_login/", views.check_login, name="check_login"),
     path("register/", views.register, name="register"),
 
-    path("profile/", views.profile, name="profile"),
+    path("profile/<int:profile_id>/", views.profile, name="profile"),
     path("profile/update/<int:profile_id>/", views.update_profile, name="update_profile"),
 
     path("rooms/create/", views.create_room, name="create_room"),

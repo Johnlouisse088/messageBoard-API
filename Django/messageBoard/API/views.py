@@ -162,14 +162,11 @@ def logout_view(request):
 
 @api_view(['GET'])
 def check_login(request):
-    print("TEsttt")
     user = request.user
-    print("testt2 ", user)
     if user.is_authenticated:
-        print("testt3")
         return Response({"message": "You already logged in"}, status=status.HTTP_200_OK)
-    print("test4")
     return Response({"message": "You still didn't logged in"}, status=status.HTTP_401_UNAUTHORIZED)
+
 
 @api_view(['POST'])
 def register(request):
@@ -181,8 +178,10 @@ def register(request):
 
 
 @api_view(['GET'])
-def profile(request):
-    user = request.user
+def profile(request, profile_id):
+
+    user = User.objects.get(id=profile_id)
+
     user_info = User.objects.get(id=user.id)
     user_room = user.room_set.all()
 
@@ -226,21 +225,26 @@ def room(request, pk):
         }
         return Response(context, status=status.HTTP_200_OK)
     else:
-        req_room = request.data.get("room")
-        req_message = request.data.get("message")
-        req_user = request.user.id
+        req_room_id = request.data.get("room")        # return an id of the room
+        req_message = request.data.get("message")     # return body of the message
+        req_user_id = request.user.id                 # return an id of the user
 
-        print("req_user: ", req_user)
+        # Participants
+        room = Room.objects.get(id=req_room_id)
+        user = User.objects.get(id=req_user_id)
+        req_participant = room.participants.add(user)
 
         request_data = {
-            "user": req_user,
-            "room": req_room,
-            "message": req_message
+            "user": req_user_id,
+            "room": req_room_id,
+            "message": req_message,
+            "participants": req_participant
         }
 
         message = MessageSerializer(data=request_data)
         if message.is_valid():
             message.save()
+            print("participants: ", room.participants.all())
             return Response(message.data, status=status.HTTP_201_CREATED)
         return Response(message.errors, status=status.HTTP_400_BAD_REQUEST)
 

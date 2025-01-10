@@ -5,7 +5,7 @@ import { AuthContext } from '../Context/Authentication';
 
 function Room() {
 
-    const { authTokens, accessTokenExpired } = useContext(AuthContext)
+    const { authTokens, userAccessToken, accessTokenExpired } = useContext(AuthContext)
 
     const [room, setRoom] = useState({});
     const [messages, setMessages] = useState([]);
@@ -16,6 +16,7 @@ function Room() {
 
     const [replyMessageForm, setReplyMessageForm] = useState({
         'room': roomId,
+        'userId': userAccessToken.id,
         'message': ''
     });
 
@@ -81,7 +82,7 @@ function Room() {
         }
         sendMessage()
     }
-
+    console.log("participants: ", room)
     return (
         <>
             <p>{room.name ? room.description : "No description"}</p>
@@ -89,7 +90,7 @@ function Room() {
                 <h4>HOSTED BY</h4>
                 <Link
                     to={`/profile/${room.user?.id}`}>
-                    <h4>@{room.user ? room.user.name : "No user"}</h4>
+                    <h4>@{room.user ? room.user.username : "No user"}</h4>
                 </Link>
 
             </div>
@@ -98,11 +99,13 @@ function Room() {
                     Delete
                 </Link>
                 ||
-                <Link
-                    to={`/rooms/update/${room.id}`}
-                    state={{ roomUpdate: room }}>
-                    Update
-                </Link>
+                {room.user?.name == userAccessToken.name ? (
+                    <Link
+                        to={`/rooms/update/${room.id}`}
+                        state={{ roomUpdate: room }}>
+                        Update
+                    </Link>
+                ) : null}
             </p>
             <p>Room: {room.name ? room.name : "No room"}</p>
             <p>Topic: {room.topic ? room.topic.name : "No topic"}</p>
@@ -117,7 +120,7 @@ function Room() {
                             {message.message}
                         </Link>
                         ||
-                        <Link to={`/profile/${room.user.id}`}>
+                        <Link to={`/profile/${message.user.id}`}>
                             {message.user.username}
                         </Link>
                     </div>
@@ -131,6 +134,14 @@ function Room() {
                     />
                     <button type='submit'>Submit</button>
                 </form>
+            </div>
+            <div>
+                <h3>Participants</h3>
+                <ul>
+                    {room.participants?.map((participant) => {
+                        return <li key={participant.id}><Link to={`/profile/${participant.id}`}>{participant.username}</Link></li>
+                    })}
+                </ul>
             </div>
         </>
     )

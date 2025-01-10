@@ -73,7 +73,7 @@ function Login() {
 
             <div>
                 <Link to='/Signup'>
-                    Create an account
+                    <button>Create an account</button>
                 </Link>
             </div>
         </>

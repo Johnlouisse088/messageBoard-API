@@ -1,10 +1,12 @@
 import React, { useState } from 'react'
+import { Link } from 'react-router-dom'
 
 function Signup() {
 
     const [userForm, setUserForm] = useState({
         'username': '',
         'email': '',
+        'bio': '',
         'password': ''
     })
 
@@ -27,11 +29,12 @@ function Signup() {
                 setUserForm({
                     'username': '',
                     'email': '',
+                    'bio': '',
                     'password': ''
                 })
                 console.log("created an account");
             } else {
-                console.log("can't create an account");
+                alert("can't create an account")
             }
         } catch (error) {
             console.error(error);
@@ -67,6 +70,18 @@ function Signup() {
                 </div>
                 <div>
                     <label>
+                        Bio
+                        <input
+                            type='text'
+                            name='bio'
+                            value={userForm.bio}
+                            placeholder='Optional'
+                            onChange={handleChange}
+                        />
+                    </label>
+                </div>
+                <div>
+                    <label>
                         Password
                         <input
                             type='password'
@@ -78,6 +93,10 @@ function Signup() {
                     </label>
                 </div>
                 <button type='submit'>Create</button>
+                <Link to='/login'>
+                    <button type='submit'>Already have an account</button>
+                </Link>
+
             </form>
         </div>
     )

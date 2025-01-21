@@ -18,6 +18,7 @@ function Authentication({ children }) {
         "description": "",
         "participants": []
     })
+    const [image, setImage] = useState(null)
 
     const navigate = useNavigate()
 
@@ -139,7 +140,7 @@ function Authentication({ children }) {
         fetchTopic,
         topics,
         error,
-        accessTokenExpired,
+        accessTokenExpired
 
     }
     return (

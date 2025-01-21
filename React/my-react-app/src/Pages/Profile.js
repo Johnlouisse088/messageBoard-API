@@ -5,7 +5,7 @@ import { Link, useParams } from 'react-router-dom';
 function Profile() {
 
     // context
-    const { authTokens, userAccessToken } = useContext(AuthContext)
+    const { authTokens, userAccessToken, image } = useContext(AuthContext)
 
     // states
     const [userInfo, setUserInfo] = useState({})
@@ -33,10 +33,19 @@ function Profile() {
         }
         fetchData()
     }, [])
-
+    console.log('data: ', userInfo)
+    console.log('image: ', userInfo.image)
     return (
         <div>
             <h1>Profile</h1>
+            {/* Display uploaded image */}
+            {userInfo?.image && (
+                <img
+                    src={`http://127.0.0.1:8000/api${userInfo.image}`}
+                    alt="Uploaded"
+                    style={{ width: '200px', marginTop: '10px' }}
+                />
+            )}
             <p>Name: {userInfo?.username || 'No username'}</p>
             <p>Email: {userInfo?.email || 'No email'} </p>
             <p>Description: {userInfo?.bio || 'No description'} </p>

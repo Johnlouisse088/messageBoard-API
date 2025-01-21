@@ -170,6 +170,20 @@ def check_login(request):
 
 @api_view(['POST'])
 def register(request):
+
+    # to view the JSON
+    username = request.data.get('username')  # Form field
+    email = request.data.get('email')  # Form field
+    username2 = request.data.get('username')
+    # to view the file
+    profile_picture = request.FILES.get('image')  # need to use the .FILES to access the image came from the request
+
+    # Print
+    print("username: ", username)
+    print("username2: ", username2)
+    print("email: ", email)
+    print("profile_picture: ", profile_picture)
+
     user = UserSerializer(data=request.data)
     if user.is_valid():
         user.save()
@@ -179,7 +193,6 @@ def register(request):
 
 @api_view(['GET'])
 def profile(request, profile_id):
-
     user = User.objects.get(id=profile_id)
 
     user_info = User.objects.get(id=user.id)
@@ -202,6 +215,7 @@ def update_profile(request, profile_id):
     user_info.name = request.data.get('name', user_info.name)
     user_info.email = request.data.get('email', user_info.email)
     user_info.bio = request.data.get('bio', user_info.bio)
+    user_info.image = request.FILES.get('image', user_info)
 
     user_info.save()
 

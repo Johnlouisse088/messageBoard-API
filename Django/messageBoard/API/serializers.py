@@ -7,7 +7,7 @@ class UserSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True)  # password is writing only
     class Meta:
         model = User
-        fields = ['id', 'name', 'email', 'bio', 'username', 'password']
+        fields = ['id', 'name', 'email', 'bio', 'username', 'password', 'image']
 
     def create(self, validated_data):
         user = User(
@@ -15,6 +15,7 @@ class UserSerializer(serializers.ModelSerializer):
             username=validated_data['username'],
             bio=validated_data['bio'],
             name=validated_data.get('name', ''),
+            image=validated_data.get('image', ''),
         )
         user.set_password(validated_data['password'])   # Hash   the password
         user.save()

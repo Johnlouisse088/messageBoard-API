@@ -67,9 +67,7 @@ function ProfileUpdate() {
         }
     }
 
-    useEffect(() => {
-        console.log("image: ", userInfo.image)
-    }, [])
+
 
     return (
         <div>

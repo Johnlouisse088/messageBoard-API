@@ -1,10 +1,8 @@
 import React, { useContext, useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, redirect, useNavigate } from 'react-router-dom'
 import { AuthContext } from '../Context/Authentication'
 
 function Signup() {
-
-    const { setImage } = useContext(AuthContext)
 
     const [userForm, setUserForm] = useState({
         'username': '',
@@ -18,6 +16,8 @@ function Signup() {
     const [preview, setPreview] = useState(null);
     const [uploadedImage, setUploadedImage] = useState(null)
 
+    const navigate = useNavigate()
+
     const handleChange = (event) => {
         const { name, value } = event.target
         setUserForm(currentForm => {
@@ -25,10 +25,9 @@ function Signup() {
         })
     }
     const handleFileChange = (event) => {
-        console.log("event: ", event)
         const file = event.target.files[0];
+        console.log("file: ", file)
         setFile(file)
-        console.log("URL.createObjectURL(file): ", URL.createObjectURL(file))
         setPreview(URL.createObjectURL(file)); // Preview the image
     };
 
@@ -38,6 +37,13 @@ function Signup() {
         Object.entries(userForm).forEach(([key, value]) => formData.append(key, value))  // way to iterate the object in JavaScript
         if (file) {
             formData.append('image', file)
+        } else { // During the user creation, if user didn't put an image. It will default to a specified image
+            // conversion  of image to file format
+            const defaultImage = 'http://127.0.0.1:8000/api/media/profile_pictures/default_image.jpg'   // endpoint
+            const response = await fetch(defaultImage)          // fetch method
+            const blob = await response.blob()                  // after it fetch, it converts to blob
+            const defaultFile = new File([blob], "default-image.png", { type: blob.type });  // conversion to file format
+            formData.append('image', defaultFile)
         }
         try {
             const response = await fetch(`http://127.0.0.1:8000/api/register/`, {
@@ -55,6 +61,7 @@ function Signup() {
                 setFile(null)
                 setPreview(null)
                 console.log("created an account");
+
             } else {
                 alert("can't create an account")
             }

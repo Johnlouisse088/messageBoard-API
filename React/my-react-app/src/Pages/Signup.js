@@ -1,9 +1,9 @@
-import React, { useContext, useState } from 'react'
-import { Link, redirect, useNavigate } from 'react-router-dom'
-import { AuthContext } from '../Context/Authentication'
+import React, { useState } from 'react'
+import { Link, useNavigate } from 'react-router-dom'
 
 function Signup() {
 
+    // form
     const [userForm, setUserForm] = useState({
         'username': '',
         'email': '',
@@ -14,22 +14,24 @@ function Signup() {
     // states - image setup
     const [file, setFile] = useState(null)
     const [preview, setPreview] = useState(null);
-    const [uploadedImage, setUploadedImage] = useState(null)
 
     const navigate = useNavigate()
 
+    // when the form changed
     const handleChange = (event) => {
         const { name, value } = event.target
         setUserForm(currentForm => {
             return { ...currentForm, [name]: value }
         })
     }
+
+    // get the file from event.target.files
     const handleFileChange = (event) => {
         const file = event.target.files[0];
-        console.log("file: ", file)
         setFile(file)
         setPreview(URL.createObjectURL(file)); // Preview the image
     };
+
 
     async function handleSubmit(event) {
         event.preventDefault()
@@ -37,8 +39,8 @@ function Signup() {
         Object.entries(userForm).forEach(([key, value]) => formData.append(key, value))  // way to iterate the object in JavaScript
         if (file) {
             formData.append('image', file)
-        } else { // During the user creation, if user didn't put an image. It will default to a specified image
-            // conversion  of image to file format
+        } else { // If user didn't put an image. It will default to a specified image
+            // CONVERSION  of image to file format
             const defaultImage = 'http://127.0.0.1:8000/api/media/profile_pictures/default_image.jpg'   // endpoint
             const response = await fetch(defaultImage)          // fetch method
             const blob = await response.blob()                  // after it fetch, it converts to blob
@@ -60,6 +62,7 @@ function Signup() {
                 })
                 setFile(null)
                 setPreview(null)
+                navigate('/login')
                 console.log("created an account");
 
             } else {
